@@ -9,33 +9,26 @@
     <h1>PÁGINA DE INSCRIÇÃO</h1>
     <h1>RETIRO DO CORAÇÃO ABRASADO 2026</h1>
 
-    <form action="/inscricao" method="POST">
+    <form action="/" method="POST">
+    Nome completo: <input type="text" name="nomeForm"><br><br>
 
-    Nome completo<br>
-    <input type="text" name="nomeForm"><br><br>
-
-    Igreja<br>
-    <select name="igrejaForm">
-    <option>Igreja A</option>
-    <option>Igreja B</option>
+    Igreja: <select name="churchForm">
+        <option>Igreja A</option>
+        <option>Igreja B</option>
     </select><br><br>
 
-    Celular<br>
-    <input type="text" name="celularForm"><br><br>
+    Celular: <input type="text" name="celForm"><br><br>
 
-    Email<br>
-    <input type="email" name="emailForm"><br><br>
+    Email: <input type="email" name="emailForm"><br><br>
 
-    Toma remédio?<br>
-    <select name="toma_remedioForm">
-    <option value="nao">Não</option>
-    <option value="sim">Sim</option>
+    Toma remédio? <select name="remedyForm">
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
     </select><br><br>
 
-    Horário do remédio<br>
-    <input type="text" name="horarioForm"><br><br>
+    Horário do remédio: <input type="text" name="hourForm"><br><br>
 
-    <button type="submit">Realizar Inscrição</button>
+    <button type="submit" value="inscricao">Realizar Inscrição</button>
 
     </form>
 </body>
