@@ -1,35 +1,108 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Inscrição</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Página de Inscrição</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
+
 <body>
-    <h1>PÁGINA DE INSCRIÇÃO</h1>
-    <h1>RETIRO DO CORAÇÃO ABRASADO 2026</h1>
 
-    <form action="/" method="POST">
-    Nome completo: <input type="text" name="nomeForm"><br><br>
+    <div class="container">
 
-    Igreja: <select name="churchForm">
-        <option>Igreja A</option>
-        <option>Igreja B</option>
-    </select><br><br>
+        <h1>RETIRO DO CORAÇÃO ABRASADO 2026</h1>
 
-    Celular: <input type="text" name="celForm"><br><br>
+        <form action="/" method="POST" enctype="multipart/form-data">
 
-    Email: <input type="email" name="emailForm"><br><br>
+            <label>Nome completo</label>
+            <input type="text" name="nomeForm" minlength="5">
 
-    Toma remédio? <select name="remedyForm">
-        <option value="nao">Não</option>
-        <option value="sim">Sim</option>
-    </select><br><br>
+            <label>CPF</label>
+            <input type="text" name="cpfForm" maxlength="11" minlength="11" placeholder="Somente números. Ex.: 12345678910" required>
 
-    Horário do remédio: <input type="text" name="hourForm"><br><br>
+            <label>Igreja</label>
+            <select name="churchForm">
 
-    <button type="submit" value="inscricao">Realizar Inscrição</button>
+                <option>Congregação em Parque Alian</option>
+                <option>Frente Missionária Areia Branca</option>
+                <option>Frente Missionária Jardim José Bonifácio</option>
+                <option>Igreja de Belford Roxo</option>
+                <option>Igreja de Coelho da Rocha</option>
+                <option>Igreja de Éden</option>
+                <option>Igreja de Jardim América</option>
+                <option>Igreja de Pq São José</option>
+                <option>Igreja de Praça da Bandeira</option>
+                <option>Igreja de São João de Meriti</option>
+                <option>Igreja de Vila Humaitá</option>
+                <option>Igreja de Vila Jurandir</option>
+                <option>Igreja de Vila Tiradentes</option>
+                <option>Igreja de Vilar do Teles</option>
 
-    </form>
+            </select>
+
+            <label>Celular</label>
+            <input type="number" name="celForm" pattern="[0-9]{10,11}" placeholder="Somente números. Ex.: 21999999999" minlength="9" maxlength="11" required>
+
+            <label>Contato de emergência</label>
+            <input type="number" name="emergencyContactForm" pattern="[0-9]{10,11}" placeholder="Somente números. Ex.: 21999999999" minlength="9" maxlength="11" required>
+
+            <label>Email</label>
+            <input type="email" name="emailForm" placeholder="exemplo@gmail.com" required>
+
+            <label>Toma alguma medicação regularmente?</label>
+            <select name="remedyForm">
+                <option value="nao">Não</option>
+                <option value="sim">Sim</option>
+            </select>
+
+            <label>Horário do remédio</label>
+            <input type="text" name="hourForm">
+
+
+    
+            <div class="alert">
+                <strong>Atenção:</strong><br>
+                Realize o pagamento primeiro, depois volte nesta página e anexe o comprovante.
+                <br><br>
+                A inscrição só será confirmada após o envio do comprovante e confirmação por parte da equipe que realizará o evento.
+            </div>
+
+
+            <div class="payment">
+
+                <p>Pagamento via PIX (R$180,01)</p>
+                <a class="pix" href="https://www.google.com" target="_blank">
+                Pagar com PIX
+                </a>
+
+                <br><br>
+
+                <p>Pagamento via Cartão (R$192,01)</p>
+                <a class="card" href="https://www.google.com" target="_blank">
+                Pagar com Cartão
+                </a>
+
+            </div>
+
+            <div class="upload">
+                <label>Anexar comprovante</label>
+                <input type="file" name="proofForm" required>
+            </div>
+
+            <button type="submit">
+            Realizar Inscrição
+            </button>
+
+        </form>
+
+    </div>
+
+    <script src="/static/js/form.js"></script>
+
 </body>
 </html>
