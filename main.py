@@ -1,18 +1,61 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, render_template
+from db import db
+from models import Enrollment
+from services import Service
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+
+db.init_app(app)
+
+
+
+service = Service()
 
 @app.route("/", methods=["GET", "POST"])
 def incricao():
     if request.method == "POST":
-        name = request.form["nomeForm"]
-        church = request.form["churchForm"]
-        celphone = request.form["celForm"]
-        email = request.form["emailForm"]
-        remedy = request.form["remedyForm"]
-        hour_remedy = request.form["hourForm"]
+        archive = request.files.get("proofForm")
+        cpf = request.form.get("cpfForm")
+        
+        upload_path = service.make_dir(cpf, archive.filename)
+
+        archive.save(upload_path)
+
+        new_enrollment = Enrollment(
+            name=request.form.get("nomeForm"),
+            cpf=cpf,
+            church=request.form.get("churchForm"),
+            celphone=request.form.get("celForm"),
+            emergency_contact=request.form.get("emergencyContactForm"),
+            email=request.form.get("emailForm"),
+            remedy=request.form.get("remedyForm"),
+            hour_remedy=request.form.get("hourForm"),
+            local_proof=upload_path,
+            payment_status="PENDENTE"
+        )
+
+        service.create_enrollment(new_enrollment)
 
     return render_template("index.html")
 
+@app.route("/enrollments", methods=["GET"])
+def get_enrollments():
+    enrollments = service.get_all_enrollments()
+
+    return render_template("enrollments.html", enrollments=enrollments)
+
+@app.route("/update/<int:id>", methods=["GET", "POST"])
+def update_enrollments(id):
+    enrollment = db.session.query(Enrollment).filter_by(id=id).first()
+    
+    if request.method == "POST":
+        service.update_enrollment(enrollment)
+
+    return render_template("enrollment_edit.html", enrollment=enrollment)
+
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+
     app.run(debug=True)
