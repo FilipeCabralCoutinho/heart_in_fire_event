@@ -14,3 +14,4 @@ class Enrollment(db.Model):
     remedy = db.Column(db.String, nullable=False)
     hour_remedy = db.Column(db.String)
     local_proof = db.Column(db.String, nullable=False)
+    payment_status = db.Column(db.String, nullable=False)
