@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="/static/css/enrollments.css">
+
+    <title> Inscrições </title>
+</head>
+<body>
+    <h1>Lista de Inscrições</h1>
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>EDITAR</th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Igreja</th>
+                <th>Celular</th>
+                <th>Contato de emergência</th>
+                <th>Email</th>
+                <th>Toma Remédio?</th>
+                <th>Horário remédio</th>
+                <th>Local Comprovante</th>
+                <th>Status Pagamento</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for enrollment in enrollments %}
+
+            <tr>
+                <td><a href="/update/{enrollment.id}">Editar</a></td>
+                <td>{{ enrollment.id }}</td>
+                <td>{{ enrollment.name }}</td>
+                <td>{{ enrollment.cpf }}</td>
+                <td>{{ enrollment.church }}</td>
+                <td>{{ enrollment.celphone }}</td>
+                <td>{{ enrollment.emergency_contact }}</td>
+                <td>{{ enrollment.email }}</td>
+                <td>{{ enrollment.remedy }}</td>
+                <td>{{ enrollment.hour_remedy }}</td>
+                <td>{{ enrollment.local_proof }}</td>
+                <td>{{ enrollment.payment_status }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+</table>
+</body>
+</html>
