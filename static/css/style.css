@@ -1,0 +1,124 @@
+*{
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg,#0b3d91,#b71c1c);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    max-width:700px;
+    width:100%;
+    padding:40px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    color:#0b3d91;
+    margin-bottom:30px;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+}
+
+label{
+    font-weight:bold;
+    margin-top:15px;
+    margin-bottom:5px;
+}
+
+input,select{
+    padding:12px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:16px;
+    width:100%;
+}
+
+input:focus,select:focus{
+    outline:none;
+    border-color:#0b3d91;
+}
+
+.alert{
+    margin-top:25px;
+    padding:15px;
+    background:#fff3f3;
+    border-left:5px solid #b71c1c;
+    font-size:14px;
+}
+
+.payment{
+    margin-top:20px;
+}
+
+.payment a{
+    display:inline-block;
+    margin-top:10px;
+    padding:12px 18px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.pix{
+    background:#0b3d91;
+    color:white;
+}
+
+.card{
+    background:#b71c1c;
+    color:white;
+}
+
+.upload{
+    margin-top:20px;
+}
+
+button{
+    margin-top:25px;
+    padding:15px;
+    border:none;
+    border-radius:6px;
+    font-size:18px;
+    font-weight:bold;
+    background:#b71c1c;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#8e0000;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width:600px){
+
+    .container{
+        padding:25px;
+    }
+
+    h1{
+        font-size:22px;
+    }
+
+    input,select{
+        font-size:15px;
+    }
+
+}
