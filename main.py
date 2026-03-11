@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, send_file
 from db import db
 from models import Enrollment
 from services import Service
@@ -71,6 +71,12 @@ def update_enrollments(id):
 
         if update:
             return redirect(url_for("get_enrollments"))
+
+@app.route("/export-to-excel")
+def export_enrollments():
+    output = service.export_to_excel()
+
+    return send_file(output, as_attachment=True, download_name="incricoes.xlsx", mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 if __name__ == "__main__":
     with app.app_context():

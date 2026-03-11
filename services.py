@@ -58,7 +58,7 @@ class Service:
                 "Celular": i.celphone,
                 "Contato Emergência": i.emergency_contact,
                 "Email": i.email,
-                "Toma Remédio": "Sim" if i.remedy else "Não",
+                "Toma Remédio": i.remedy,
                 "Horário Remédio": i.hour_remedy,
                 "Status Pagamento": i.payment_status,
                 "Local Comprovante": i.local_proof
