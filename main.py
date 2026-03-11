@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from db import db
 from models import Enrollment
 from services import Service
@@ -13,7 +13,7 @@ db.init_app(app)
 service = Service()
 
 @app.route("/", methods=["GET", "POST"])
-def incricao():
+def enrollment():
     if request.method == "POST":
         archive = request.files.get("proofForm")
         cpf = request.form.get("cpfForm")
@@ -48,11 +48,29 @@ def get_enrollments():
 @app.route("/update/<int:id>", methods=["GET", "POST"])
 def update_enrollments(id):
     enrollment = db.session.query(Enrollment).filter_by(id=id).first()
+
+    if request.method == "GET":
+        return render_template("enrollment_edit.html", enrollment=enrollment)
     
     if request.method == "POST":
-        service.update_enrollment(enrollment)
+        new_enrollment = Enrollment(
+            id=enrollment.id,
+            name=request.form.get("nomeForm"),
+            cpf=request.form.get("cpfForm"),
+            church=request.form.get("churchForm"),
+            celphone=request.form.get("celForm"),
+            emergency_contact=request.form.get("emergencyContactForm"),
+            email=request.form.get("emailForm"),
+            remedy=request.form.get("remedyForm"),
+            hour_remedy=request.form.get("hourForm"),
+            local_proof=enrollment.local_proof,
+            payment_status=request.form.get("paymentForm")
+        )
 
-    return render_template("enrollment_edit.html", enrollment=enrollment)
+        update = service.update_enrollment(enrollment, new_enrollment)
+
+        if update:
+            return redirect(url_for("get_enrollments"))
 
 if __name__ == "__main__":
     with app.app_context():
