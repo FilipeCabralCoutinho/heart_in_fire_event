@@ -35,7 +35,7 @@
             {% for enrollment in enrollments %}
 
             <tr>
-                <td><a href="/update/{enrollment.id}">Editar</a></td>
+                <td><a href="{{ url_for('update_enrollments', id=enrollment.id) }}">Editar</a></td>
                 <td>{{ enrollment.id }}</td>
                 <td>{{ enrollment.name }}</td>
                 <td>{{ enrollment.cpf }}</td>
