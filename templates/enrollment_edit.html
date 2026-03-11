@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Editar Inscrição</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Editar Inscrição</h1>
+
+        <form action="{{ url_for('update_enrollments', id=enrollment.id) }}" method="POST" enctype="multipart/form-data">
+
+            <label>Nome completo</label>
+            <input type="text" name="nomeForm" minlength="5" value="{{enrollment.name}}">
+
+            <label>CPF</label>
+            <input type="text" name="cpfForm" maxlength="11" minlength="11" placeholder="Somente números. Ex.: 12345678910" value="{{enrollment.cpf}}" required>
+
+            <label>Igreja</label>
+            <select name="churchForm" value="{{enrollment.church}}">
+
+                <option>Congregação em Parque Alian</option>
+                <option>Frente Missionária Areia Branca</option>
+                <option>Frente Missionária Jardim José Bonifácio</option>
+                <option>Igreja de Belford Roxo</option>
+                <option>Igreja de Coelho da Rocha</option>
+                <option>Igreja de Éden</option>
+                <option>Igreja de Jardim América</option>
+                <option>Igreja de Pq São José</option>
+                <option>Igreja de Praça da Bandeira</option>
+                <option>Igreja de São João de Meriti</option>
+                <option>Igreja de Vila Humaitá</option>
+                <option>Igreja de Vila Jurandir</option>
+                <option>Igreja de Vila Tiradentes</option>
+                <option>Igreja de Vilar do Teles</option>
+
+            </select>
+
+            <label>Celular</label>
+            <input type="number" name="celForm" pattern="[0-9]{10,11}" placeholder="Somente números. Ex.: 21999999999" minlength="9" maxlength="11" value="{{enrollment.celphone}}" required>
+
+            <label>Contato de emergência</label>
+            <input type="number" name="emergencyContactForm" pattern="[0-9]{10,11}" placeholder="Somente números. Ex.: 21999999999" minlength="9" maxlength="11" value="{{enrollment.emergency_contact}}" required>
+
+            <label>Email</label>
+            <input type="email" name="emailForm" placeholder="exemplo@gmail.com" value="{{enrollment.email}}" required>
+
+            <label>Toma alguma medicação regularmente?</label>
+            <select name="remedyForm" value="{{enrollment.remedy}}">
+                <option value="nao">Não</option>
+                <option value="sim">Sim</option>
+            </select>
+
+            <label>Horário do remédio</label>
+            <input type="text" name="hourForm" value="{{enrollment.hour_remedy}}">
+
+            <label>Status Pagamento</label>
+            <select name="paymentForm">
+                <option value="PENDENTE"
+                    {% if enrollment.payment_status == "PENDENTE" %}selected{% endif %}>
+                    PENDENTE
+                </option>
+
+                <option value="CONFIRMADO"
+                    {% if enrollment.payment_status == "CONFIRMADO" %}selected{% endif %}>
+                    CONFIRMADO
+                </option>
+            </select>
+
+            <button type="submit">
+            Salvar Edição
+            </button>
+
+        </form>
+
+    </div>
+
+    <script src="/static/js/form.js"></script>
+
+</body>
+</html>
