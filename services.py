@@ -7,6 +7,10 @@ import io
 import requests
 from threading import Thread
 from dotenv import load_dotenv
+import smtplib
+from email.message import EmailMessage
+from jinja2 import Template
+import time
 
 load_dotenv()
 
@@ -21,7 +25,13 @@ class Service:
         db.session.add(new_enrollment)
         db.session.commit()
 
-        self.send_to_email()
+        Thread(
+        target=self.send_to_email,
+        args=(new_enrollment, "new")
+        ).start()
+        
+        time.sleep(0.5)
+
         Thread(
         target=self.send_to_telegram,
         args=(new_enrollment, "new")
@@ -50,6 +60,13 @@ class Service:
         enrollment.payment_status = new_enrollment.payment_status
 
         db.session.commit()
+
+        Thread(
+        target=self.send_to_email,
+        args=(new_enrollment, "update")
+        ).start()
+        
+        time.sleep(0.5)
 
         Thread(
         target=self.send_to_telegram,
@@ -88,8 +105,57 @@ class Service:
 
         return output
 
-    def send_to_email(self):
-        pass
+    def send_to_email(self, enrollment, type_msg):
+        msg = EmailMessage()
+
+        if type_msg == "new":
+            msg["Subject"] = "Sua Inscrição foi recebida! - Retiro do Coração Abrasado"
+
+            text_head = "Confirmação de inscrição"
+
+            text_title = "Recebemos sua inscrição 🙌"
+
+            start_text = """
+                        Sua inscrição para o <strong>Retiro do Coração Abrasado</strong> foi recebida.
+                        Assim que seu pagamento for confirmado por um dos organizadores você receberá
+                        um novo e-mail informando a confirmação.<br>
+                        Em breve nos vemos no <strong>Retiro do Coração Abrasado</strong> ❤️‍🔥
+                        """
+        
+        elif type_msg == "update":
+            msg["Subject"] = "Confirmação de inscrição – Retiro do Coração Abrasado"
+            
+            text_head = "Atualização de inscrição"
+
+            text_title = "Sua Inscrição foi Atualizada ✅"
+
+            start_text = """
+                        Sua inscrição para o <strong>Retiro do Coração Abrasado</strong> foi atualizada.
+                        Os dados abaixo refletem o status atual da sua inscrição.<br>
+                        Mal posso esperar pra te encontrar no <strong>Retiro do Coração Abrasado</strong> ❤️‍🔥
+                        """
+        
+        with open("templates/enrollment_email.html") as f:
+            template = Template(f.read())
+
+        html_email = template.render(
+            enrollment=enrollment,
+            text_head=text_head,
+            text_title=text_title,
+            start_text=start_text,
+            organizer_1=os.getenv('ORGANIZER_1'),
+            organizer_2=os.getenv('ORGANIZER_2'),
+            organizer_3=os.getenv('ORGANIZER_3')
+            )
+
+        msg.add_alternative(html_email, subtype="html")
+
+        msg["From"] = f"Retiro Coração Abrasado <{os.getenv('GMAIL_ADRESS')}>"
+        msg["To"] = enrollment.email
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(os.getenv("GMAIL_ADRESS"), os.getenv("GMAIL_PASSWORD_APP"))
+            smtp.send_message(msg)
 
     def send_to_telegram(self, enrollment, type_msg):
         message = f"""
