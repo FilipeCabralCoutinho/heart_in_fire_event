@@ -37,6 +37,8 @@ def enrollment():
 
         service.create_enrollment(new_enrollment)
 
+        return redirect(url_for("enrollment_received"))
+
     return render_template("index.html")
 
 @app.route("/enrollments", methods=["GET"])
@@ -77,6 +79,10 @@ def export_enrollments():
     output = service.export_to_excel()
 
     return send_file(output, as_attachment=True, download_name="incricoes.xlsx", mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+@app.route("/enrollment_received")
+def enrollment_received():
+    return render_template("enrollment_received.html")
 
 if __name__ == "__main__":
     with app.app_context():
