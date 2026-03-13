@@ -1,6 +1,7 @@
 from db import db
 from models import Enrollment
 from pathlib import Path
+from flask import current_app
 import os
 import pandas as pd
 import io
@@ -10,7 +11,6 @@ from dotenv import load_dotenv
 import smtplib
 from email.message import EmailMessage
 from jinja2 import Template
-import time
 
 load_dotenv()
 
@@ -18,24 +18,11 @@ ROOT_PATH = Path(__file__).resolve().parent
 
 
 class Service:
-    def __init__(self):
-        self.queue_telegram = []
-
-    def create_enrollment(self, new_enrollment):
+    def create_enrollment(self, new_enrollment, enrollment_dict):
         db.session.add(new_enrollment)
         db.session.commit()
 
-        Thread(
-        target=self.send_to_email,
-        args=(new_enrollment, "new")
-        ).start()
-        
-        time.sleep(0.5)
-
-        Thread(
-        target=self.send_to_telegram,
-        args=(new_enrollment, "new")
-        ).start()
+        self._send_notifications(enrollment_dict, "new")
 
     def get_all_enrollments(self):
         enrollments = db.session.query(Enrollment).all()
@@ -48,7 +35,7 @@ class Service:
 
         return os.path.join(user_path, archive_name)
     
-    def update_enrollment(self, enrollment, new_enrollment):
+    def update_enrollment(self, enrollment, new_enrollment, enrollment_dict):
         enrollment.name = new_enrollment.name
         enrollment.cpf = new_enrollment.cpf
         enrollment.church = new_enrollment.church
@@ -61,22 +48,13 @@ class Service:
 
         db.session.commit()
 
-        Thread(
-        target=self.send_to_email,
-        args=(new_enrollment, "update")
-        ).start()
-        
-        time.sleep(0.5)
-
-        Thread(
-        target=self.send_to_telegram,
-        args=(new_enrollment, "update")
-        ).start()
+        self._send_notifications(enrollment_dict, "update")
 
         return True
 
-    def export_to_excel(self):
-        enrollments = db.session.query(Enrollment).all()
+    def export_to_excel(self, app):
+        with app.app_context():
+            enrollments = db.session.query(Enrollment).all()
 
         data = []
 
@@ -92,7 +70,8 @@ class Service:
                 "Toma Remédio": i.remedy,
                 "Horário Remédio": i.hour_remedy,
                 "Status Pagamento": i.payment_status,
-                "Local Comprovante": i.local_proof
+                "Local Comprovante": i.local_proof,
+                "Data/Hora": str(i.created_at)
             })
 
         df = pd.DataFrame(data)
@@ -151,7 +130,7 @@ class Service:
         msg.add_alternative(html_email, subtype="html")
 
         msg["From"] = f"Retiro Coração Abrasado <{os.getenv('GMAIL_ADRESS')}>"
-        msg["To"] = enrollment.email
+        msg["To"] = enrollment.get("email")
 
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
             smtp.login(os.getenv("GMAIL_ADRESS"), os.getenv("GMAIL_PASSWORD_APP"))
@@ -160,16 +139,16 @@ class Service:
     def send_to_telegram(self, enrollment, type_msg):
         message = f"""
             
-            NR INSCR: {enrollment.id}
-            NOME: {enrollment.name}
-            CPF: {enrollment.cpf}
-            IGREJA: {enrollment.church}
-            CELULAR: {enrollment.celphone}
-            CTT EMERGÊNCIA: {enrollment.emergency_contact}
-            EMAIL: {enrollment.email}
-            TOMA REMÉDIO: {enrollment.remedy}
-            HORÁRIO REMÉDIO: {enrollment.hour_remedy}
-            STATUS PAGAMENTO: {enrollment.payment_status}
+            NR INSCR: {enrollment.get('id')}
+            NOME: {enrollment.get('name')}
+            CPF: {enrollment.get('cpf')}
+            IGREJA: {enrollment.get('church')}
+            CELULAR: {enrollment.get('celphone')}
+            CTT EMERGÊNCIA: {enrollment.get('emergency_contact')}
+            EMAIL: {enrollment.get('email')}
+            TOMA REMÉDIO: {enrollment.get('remedy')}
+            HORÁRIO REMÉDIO: {enrollment.get('hour_remedy')}
+            STATUS PAGAMENTO: {enrollment.get('payment_status')}
             
             """
 
@@ -185,7 +164,7 @@ class Service:
             except Exception as e:
                     raise e
 
-            archive_type = os.path.splitext(enrollment.local_proof)[1]
+            archive_type = os.path.splitext(enrollment.get('local_proof'))[1]
 
             if archive_type == ".pdf":
                 url_proof = os.getenv("URL_TELEGRAM_SEND_DOC")
@@ -194,13 +173,13 @@ class Service:
                 url_proof = os.getenv("URL_TELEGRAM_SEND_IMG")
                 key = "photo"
 
-            with open(enrollment.local_proof, "rb") as proof:
+            with open(enrollment.get('local_proof'), "rb") as proof:
                 try:
                     response_proof = requests.post(
                         url_proof,
                         data={
                             "chat_id": os.getenv("ID_GRUPO_INSCRICOES"),
-                            "caption": f"Comprovante inscrição Nr {enrollment.id}"
+                            "caption": f"Comprovante inscrição Nr {enrollment.get('id')}"
                         },
                         files={
                             key: proof
@@ -223,3 +202,58 @@ class Service:
 
             except Exception as e:
                 raise e
+
+    def obj_to_dict(self, enrollment):
+        data = {
+            "id": enrollment.id,
+            "name": enrollment.name,
+            "cpf": enrollment.cpf,
+            "church": enrollment.church,
+            "celphone": enrollment.celphone,
+            "emergency_contact": enrollment.emergency_contact,
+            "email": enrollment.email,
+            "remedy": enrollment.remedy,
+            "hour_remedy": enrollment.hour_remedy,
+            "payment_status": enrollment.payment_status,
+            "local_proof": enrollment.local_proof
+
+        }
+
+        return data
+
+    def _send_notifications(self, enrollment_dict, type_msg):
+        Thread(
+        target=self.send_to_email,
+        args=(enrollment_dict, type_msg)
+        ).start()
+
+        Thread(
+        target=self.send_to_telegram,
+        args=(enrollment_dict, type_msg)
+        ).start()
+    
+    def export_excel_to_telegram(self, app):
+        archive = self.export_to_excel(app)
+
+        try:
+            response_proof = requests.post(
+                os.getenv("URL_TELEGRAM_SEND_DOC"),
+                data={
+                    "chat_id": os.getenv("ID_GRUPO_INSCRICOES"),
+                    "caption": f"Arquivo Consolidação Inscrições"
+                },
+                files={
+                    "document": ("inscricoes.xlsx", archive)
+                }
+            )
+
+            response_proof.raise_for_status()
+
+        except Exception as e:
+            raise e
+
+    def _thread_export_excel_to_telegram(self):
+        Thread(
+            target=self.export_excel_to_telegram,
+            args=(current_app._get_current_object(),)
+        ).start()
