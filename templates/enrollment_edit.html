@@ -8,7 +8,7 @@
 <title>Editar Inscrição</title>
 
 <link rel="stylesheet" href="/static/css/style.css">
-
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 
 <body>
@@ -17,7 +17,7 @@
 
         <h1>Editar Inscrição</h1>
 
-        <form action="{{ url_for('update_enrollments', id=enrollment.id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url_for('routes.update_enrollments', id=enrollment.id) }}" method="POST" enctype="multipart/form-data">
 
             <label>Nome completo</label>
             <input type="text" name="nomeForm" minlength="5" value="{{enrollment.name}}">

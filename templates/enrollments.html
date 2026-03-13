@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="/static/css/enrollments.css">
 
     <title> Inscrições </title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body>
+    <a href="{{ url_for('routes.logout') }}" class="logout-btn">🚪 Sair</a>
     <h1>Lista de Inscrições</h1>
 
     <table border="1">
@@ -26,6 +28,7 @@
                 <th>Toma Remédio?</th>
                 <th>Horário remédio</th>
                 <th>Local Comprovante</th>
+                <th>Data/Hora</th>
                 <th>Status Pagamento</th>
             </tr>
         </thead>
@@ -35,7 +38,7 @@
             {% for enrollment in enrollments %}
 
             <tr>
-                <td><a href="{{ url_for('update_enrollments', id=enrollment.id) }}">Editar</a></td>
+                <td><a href="{{ url_for('routes.update_enrollments', id=enrollment.id) }}">Editar</a></td>
                 <td>{{ enrollment.id }}</td>
                 <td>{{ enrollment.name }}</td>
                 <td>{{ enrollment.cpf }}</td>
@@ -45,7 +48,8 @@
                 <td>{{ enrollment.email }}</td>
                 <td>{{ enrollment.remedy }}</td>
                 <td>{{ enrollment.hour_remedy }}</td>
-                <td>{{ enrollment.local_proof }}</td>
+                <td class="comprovante">{{ enrollment.local_proof }}</td>
+                <td>{{ enrollment.created_at }}</td>
                 <td>{{ enrollment.payment_status }}</td>
             </tr>
 
@@ -54,6 +58,7 @@
         </tbody>
 
 </table><br><br>
-<a href="{{ url_for('export_enrollments') }}"> EXPORTAR PARA EXCEL </a>
+<a href="{{ url_for('routes.export_enrollments') }}"> EXPORTAR PARA EXCEL </a><br><br>
+<a href="{{ url_for('routes.export_to_telegram') }}"> EXPORTAR EXCEL PARA TELEGRAM</a>
 </body>
 </html>

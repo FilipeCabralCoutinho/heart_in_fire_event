@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f8;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+}
+
+form{
+    background:white;
+    padding:40px;
+    border-radius:8px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    text-align:center;
+    width:300px;
+}
+
+h1{
+    margin-bottom:25px;
+    color:#333;
+    font-size:22px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:14px;
+    box-sizing:border-box;
+}
+
+input:focus{
+    outline:none;
+    border-color:#4CAF50;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:#4CAF50;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#43a047;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<form method="POST">
+
+<h1>BEM VINDO ADMIN</h1>
+
+<input type="password" name="password" placeholder="Senha">
+
+<button type="submit">Entrar</button>
+
+</form>
+
+</body>
+</html>
