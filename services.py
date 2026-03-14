@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import smtplib
 from email.message import EmailMessage
 from jinja2 import Template
+from logger import logger
 
 load_dotenv()
 
@@ -18,41 +19,79 @@ ROOT_PATH = Path(__file__).resolve().parent
 
 
 class Service:
-    def create_enrollment(self, new_enrollment, enrollment_dict):
-        db.session.add(new_enrollment)
-        db.session.commit()
+    def create_enrollment(self, new_enrollment):
+        enrollment_cpf = new_enrollment.cpf
+        logger.info(f"create_enrollment method initialized for Name: {new_enrollment.name}")
+
+        try:
+            db.session.add(new_enrollment)
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            logger.error(
+                "Error when trying to save registration in the database. Name:"
+                f" {new_enrollment.name}. Error: {e}"
+                )
+            raise
+        
+        enrollment = db.session.query(Enrollment).filter_by(cpf=enrollment_cpf).first()
+        enrollment_dict = self.obj_to_dict(enrollment)
 
         self._send_notifications(enrollment_dict, "new")
 
     def get_all_enrollments(self):
-        enrollments = db.session.query(Enrollment).all()
+        logger.info("get_all_enrollments method initialized!")
+        
+        try:
+            enrollments = db.session.query(Enrollment).filter_by(id=id).first()
+
+        except Exception as e:
+            logger.error(f"error when trying to get the registrations. Error: {e}")
+            raise
 
         return enrollments
     
     def make_dir(self, cpf, archive_name):
+        logger.info(f"make_dir method initialized for archive: {archive_name}")
+
         user_path = f"{ROOT_PATH}/uploads/{cpf}"
         os.makedirs(user_path, exist_ok=True)
 
         return os.path.join(user_path, archive_name)
     
     def update_enrollment(self, enrollment, new_enrollment, enrollment_dict):
-        enrollment.name = new_enrollment.name
-        enrollment.cpf = new_enrollment.cpf
-        enrollment.church = new_enrollment.church
-        enrollment.celphone = new_enrollment.celphone
-        enrollment.emergency_contact = new_enrollment.emergency_contact
-        enrollment.email = new_enrollment.email
-        enrollment.remedy = new_enrollment.remedy
-        enrollment.hour_remedy = new_enrollment.hour_remedy
-        enrollment.payment_status = new_enrollment.payment_status
+        logger.info(f"update_enrollment initialized for id: {enrollment.id}")
 
-        db.session.commit()
+        try:
+            enrollment.name = new_enrollment.name
+            enrollment.cpf = new_enrollment.cpf
+            enrollment.church = new_enrollment.church
+            enrollment.celphone = new_enrollment.celphone
+            enrollment.emergency_contact = new_enrollment.emergency_contact
+            enrollment.email = new_enrollment.email
+            enrollment.remedy = new_enrollment.remedy
+            enrollment.hour_remedy = new_enrollment.hour_remedy
+            enrollment.payment_status = new_enrollment.payment_status
+
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            logger.error(
+                "Error when trying to update enrollment"
+                f" id: {enrollment.id}. Error: {e}"
+                )
+            raise
+
 
         self._send_notifications(enrollment_dict, "update")
 
         return True
 
     def export_to_excel(self, app):
+        logger.info("export_to_excel method initialized!")
+
         with app.app_context():
             enrollments = db.session.query(Enrollment).all()
 
@@ -82,9 +121,18 @@ class Service:
 
         output.seek(0)
 
+        logger.info("Excel obtained with success!")
+
         return output
 
     def send_to_email(self, enrollment, type_msg):
+        enrollment_id = enrollment.get('id')
+        
+        logger.info(
+            "send_to_email method initialized for id:"
+            f" {enrollment_id} and type_msg: {type_msg}"
+            )
+
         msg = EmailMessage()
 
         if type_msg == "new":
@@ -114,32 +162,53 @@ class Service:
                         Mal posso esperar pra te encontrar no <strong>Retiro do Coração Abrasado</strong> ❤️‍🔥
                         """
         
-        with open("templates/enrollment_email.html") as f:
-            template = Template(f.read())
+        try:
+            with open("templates/enrollment_email.html") as f:
+                template = Template(f.read())
 
-        html_email = template.render(
-            enrollment=enrollment,
-            text_head=text_head,
-            text_title=text_title,
-            start_text=start_text,
-            organizer_1=os.getenv('ORGANIZER_1'),
-            organizer_2=os.getenv('ORGANIZER_2'),
-            organizer_3=os.getenv('ORGANIZER_3')
-            )
+            html_email = template.render(
+                enrollment=enrollment,
+                text_head=text_head,
+                text_title=text_title,
+                start_text=start_text,
+                organizer_1=os.getenv('ORGANIZER_1'),
+                organizer_2=os.getenv('ORGANIZER_2'),
+                organizer_3=os.getenv('ORGANIZER_3')
+                )
 
-        msg.add_alternative(html_email, subtype="html")
+            msg.add_alternative(html_email, subtype="html")
 
-        msg["From"] = f"Retiro Coração Abrasado <{os.getenv('GMAIL_ADRESS')}>"
-        msg["To"] = enrollment.get("email")
+            msg["From"] = f"Retiro Coração Abrasado <{os.getenv('GMAIL_ADRESS')}>"
+            msg["To"] = enrollment.get("email")
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(os.getenv("GMAIL_ADRESS"), os.getenv("GMAIL_PASSWORD_APP"))
-            smtp.send_message(msg)
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                smtp.login(os.getenv("GMAIL_ADRESS"), os.getenv("GMAIL_PASSWORD_APP"))
+                smtp.send_message(msg)
+
+            logger.info(
+                "Email sended with success for id:"
+                f" {enrollment_id} and type_msg: {type_msg}"
+                )
+            
+        except Exception as e:
+            logger.error(
+                "Error when trying to send email for"
+                f" id: {enrollment_id} and type_msg: {type_msg}. Error: {e}"
+                )
+            raise
+
 
     def send_to_telegram(self, enrollment, type_msg):
+        enrollment_id = enrollment.get('id')
+
+        logger.info(
+            "send_to_telegram method initialized for id:"
+            f" {enrollment_id} and type_msg: {type_msg}"
+            )
+
         message = f"""
             
-            NR INSCR: {enrollment.get('id')}
+            NR INSCR: {enrollment_id}
             NOME: {enrollment.get('name')}
             CPF: {enrollment.get('cpf')}
             IGREJA: {enrollment.get('church')}
@@ -158,10 +227,18 @@ class Service:
             url = os.getenv("URL_TELEGRAM_SEND_MSG") + message
 
             try:
+                logger.info(
+                    "Initialize send msg with new enrollment id:"
+                    f" {enrollment_id}"
+                    )
                 response_msg = requests.post(url)
                 response_msg.raise_for_status()
 
             except Exception as e:
+                    logger.error(
+                        "Error when trying send telegram msg with id:" \
+                        f" {enrollment_id} and type_msg{type_msg}. Error: {e}"
+                        )
                     raise e
 
             archive_type = os.path.splitext(enrollment.get('local_proof'))[1]
@@ -175,11 +252,12 @@ class Service:
 
             with open(enrollment.get('local_proof'), "rb") as proof:
                 try:
+                    logger.info(f"Initialize send proof for id: {enrollment_id}")
                     response_proof = requests.post(
                         url_proof,
                         data={
                             "chat_id": os.getenv("ID_GRUPO_INSCRICOES"),
-                            "caption": f"Comprovante inscrição Nr {enrollment.get('id')}"
+                            "caption": f"Comprovante inscrição Nr {enrollment_id}"
                         },
                         files={
                             key: proof
@@ -189,6 +267,10 @@ class Service:
                     response_proof.raise_for_status()
 
                 except Exception as e:
+                    logger.error(
+                        "Error when trying send proof"
+                        f" for id: {enrollment_id}"
+                        )
                     raise e
 
         elif type_msg == "update":
@@ -197,13 +279,23 @@ class Service:
             url = os.getenv("URL_TELEGRAM_SEND_MSG") + message
 
             try:
+                logger.info(
+                    "Initialize send msg with enrollment update"
+                    f" for id: {enrollment_id}"
+                    )
                 response_msg = requests.post(url)
                 response_msg.raise_for_status()
 
             except Exception as e:
+                logger.error(
+                    "Error when trying send telegram msg for id:" \
+                    f" {enrollment_id} and type_msg: {type_msg}. Error{e}"
+                    )
                 raise e
 
     def obj_to_dict(self, enrollment):
+        logger.info(f"obj_to_dict initialized for id: {enrollment.id}")
+
         data = {
             "id": enrollment.id,
             "name": enrollment.name,
@@ -222,21 +314,35 @@ class Service:
         return data
 
     def _send_notifications(self, enrollment_dict, type_msg):
-        Thread(
-        target=self.send_to_email,
-        args=(enrollment_dict, type_msg)
-        ).start()
+        enrollment_id = enrollment_dict.get('id')
 
-        Thread(
-        target=self.send_to_telegram,
-        args=(enrollment_dict, type_msg)
-        ).start()
+        logger.info(f"_send_notifications initialized for id: {enrollment_id}")
+        
+        try:
+            Thread(
+            target=self.send_to_email,
+            args=(enrollment_dict, type_msg)
+            ).start()
+
+            Thread(
+            target=self.send_to_telegram,
+            args=(enrollment_dict, type_msg)
+            ).start()
+
+            logger.info(f"Threads created with success for id: {enrollment_id}")
+        
+        except Exception as e:
+            logger.error(
+                f"Error when trying create Thread for id: {enrollment_id}"
+            )
+            raise e
     
     def export_excel_to_telegram(self, app):
         archive = self.export_to_excel(app)
 
         try:
-            response_proof = requests.post(
+            logger.info("Initialize send enrollments excel to telegram.")
+            response = requests.post(
                 os.getenv("URL_TELEGRAM_SEND_DOC"),
                 data={
                     "chat_id": os.getenv("ID_GRUPO_INSCRICOES"),
@@ -247,13 +353,25 @@ class Service:
                 }
             )
 
-            response_proof.raise_for_status()
+            response.raise_for_status()
 
         except Exception as e:
+            logger.error(f"Error when trying send enrollments excel to telegram. Error:  {e}")
             raise e
 
     def _thread_export_excel_to_telegram(self):
-        Thread(
-            target=self.export_excel_to_telegram,
-            args=(current_app._get_current_object(),)
-        ).start()
+        logger.info("_thread_export_excel_to_telegram method initialized!")
+        try:
+            Thread(
+                target=self.export_excel_to_telegram,
+                args=(current_app._get_current_object(),)
+            ).start()
+
+            logger.info("Thread created with success!")
+
+        except Exception as e:
+            logger.error(
+                "Error when trying create thread for "
+                f"export_excel_to_telegram. Error: {e}"
+                )
+            raise e
