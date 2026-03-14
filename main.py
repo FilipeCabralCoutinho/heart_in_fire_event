@@ -6,7 +6,7 @@ from db import db
 from routes import routes
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.register_blueprint(routes)
 app.secret_key = os.getenv("SECRET_KEY")
 
