@@ -12,6 +12,7 @@ import smtplib
 from email.message import EmailMessage
 from jinja2 import Template
 from logger import logger
+from sqlalchemy import or_
 
 load_dotenv()
 
@@ -21,7 +22,23 @@ ROOT_PATH = Path(__file__).resolve().parent
 class Service:
     def create_enrollment(self, new_enrollment):
         enrollment_cpf = new_enrollment.cpf
-        logger.info(f"create_enrollment method initialized for Name: {new_enrollment.name}")
+        enrollment_name = new_enrollment.name
+        
+        existing = (
+            db.session.query(Enrollment)
+            .filter(or_(
+                Enrollment.cpf == enrollment_cpf,
+                Enrollment.name == enrollment_name
+                ))
+                .first()
+                )
+
+        if existing is not None:
+            if existing.cpf == enrollment_cpf:
+                logger.error(f"Participant already registered. Name: {enrollment_name}")
+                return False
+
+        logger.info(f"create_enrollment method initialized for Name: {enrollment_name}")
 
         try:
             db.session.add(new_enrollment)
@@ -31,7 +48,7 @@ class Service:
             db.session.rollback()
             logger.error(
                 "Error when trying to save registration in the database. Name:"
-                f" {new_enrollment.name}. Error: {e}"
+                f" {enrollment_name}. Error: {e}"
                 )
             raise
         
@@ -40,11 +57,13 @@ class Service:
 
         self._send_notifications(enrollment_dict, "new")
 
+        return True
+
     def get_all_enrollments(self):
         logger.info("get_all_enrollments method initialized!")
         
         try:
-            enrollments = db.session.query(Enrollment).filter_by(id=id).first()
+            enrollments = db.session.query(Enrollment).all()
 
         except Exception as e:
             logger.error(f"error when trying to get the registrations. Error: {e}")
@@ -110,7 +129,9 @@ class Service:
                 "Horário Remédio": i.hour_remedy,
                 "Status Pagamento": i.payment_status,
                 "Local Comprovante": i.local_proof,
-                "Data/Hora": str(i.created_at)
+                "Data/Hora": str(i.created_at),
+                "Consentimento": i.consent_given,
+                "IP_USER": i.ip_address
             })
 
         df = pd.DataFrame(data)
@@ -196,7 +217,6 @@ class Service:
                 f" id: {enrollment_id} and type_msg: {type_msg}. Error: {e}"
                 )
             raise
-
 
     def send_to_telegram(self, enrollment, type_msg):
         enrollment_id = enrollment.get('id')
@@ -292,6 +312,11 @@ class Service:
                     f" {enrollment_id} and type_msg: {type_msg}. Error{e}"
                     )
                 raise e
+
+        logger.info(
+                "Telegram messages sended with success for id:"
+                f" {enrollment_id} and type_msg: {type_msg}"
+            )
 
     def obj_to_dict(self, enrollment):
         logger.info(f"obj_to_dict initialized for id: {enrollment.id}")

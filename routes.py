@@ -1,10 +1,12 @@
-from flask import render_template, request, Blueprint, redirect, url_for, send_file, session, current_app
+from flask import render_template, request, Blueprint, redirect, url_for, send_file, session, current_app, flash
 from services import Service
 from models import Enrollment
 from services import Service
 import os
 from auth import login_required
 from db import db
+from validator import validator
+from logger import logger
 
 routes = Blueprint("routes", __name__)
 
@@ -13,27 +15,61 @@ service = Service()
 @routes.route("/", methods=["GET", "POST"])
 def enrollment():
     if request.method == "POST":
-        archive = request.files.get("proofForm")
-        cpf = request.form.get("cpfForm")
-        
-        upload_path = service.make_dir(cpf, archive.filename)
+        name = request.form.get("nomeForm")
 
-        archive.save(upload_path)
+        logger.info(f"A new registration process has been initiated for Name: {name}")
+
+        consent_given = request.form.get("lgpdForm")
+
+        if not consent_given:
+            flash("É necessário concordar com os termo de consentimento para tratamento dos dados para fins do evento.")
+            return redirect(url_for("routes.enrollment"))
+
+
+        file = request.files.get("proofForm")
+        cpf = request.form.get("cpfForm")
+        celphone = request.form.get("celForm")
+        emergency_contact = request.form.get("emergencyContactForm")
+        email = request.form.get("emailForm")
+        church = request.form.get("churchForm")
+
+        valid = validator.validate_all(name, cpf, celphone, emergency_contact, email, church, file.filename)
+
+        if valid is False:
+            return redirect(url_for("routes.enrollment"))
+        elif valid is not None:
+            logger.critical(f"Fail in validation data, data informed: {valid}")
+            return redirect(url_for("routes.enrollment"))
+
+        logger.info(f"Information validated for the name {name}, proceeding with registration creation.")
+
+        upload_path = service.make_dir(cpf, file.filename)
+
+        file.save(upload_path)
+
 
         new_enrollment = Enrollment(
-            name=request.form.get("nomeForm"),
+            name=name,
             cpf=cpf,
-            church=request.form.get("churchForm"),
-            celphone=request.form.get("celForm"),
-            emergency_contact=request.form.get("emergencyContactForm"),
-            email=request.form.get("emailForm"),
+            church=church,
+            celphone=celphone,
+            emergency_contact=emergency_contact,
+            email=email,
             remedy=request.form.get("remedyForm"),
             hour_remedy=request.form.get("hourForm"),
             local_proof=upload_path,
-            payment_status="PENDENTE"
+            payment_status="PENDENTE",
+            consent_given=consent_given,
+            ip_address=request.remote_addr
         )
 
-        service.create_enrollment(new_enrollment)
+        response = service.create_enrollment(new_enrollment)
+
+        if response is False:
+            flash("Participante já cadastrado!")
+            return redirect(url_for("routes.enrollment"))
+
+        logger.info(f"Registration completed for the name: {name}")
 
         return redirect(url_for("routes.enrollment_received"))
 
@@ -55,14 +91,34 @@ def update_enrollments(id):
         return render_template("enrollment_edit.html", enrollment=enrollment)
     
     if request.method == "POST":
+        name = request.form.get("nomeForm")
+
+        logger.info(f"A update enrollment process has been initiated for id: {enrollment.id}")
+
+        cpf = request.form.get("cpfForm")
+        celphone = request.form.get("celForm")
+        emergency_contact = request.form.get("emergencyContactForm")
+        email = request.form.get("emailForm")
+        church = request.form.get("churchForm")
+
+        valid = validator.validate_all(name, cpf, celphone, emergency_contact, email, church)
+        
+        if valid is False:
+            return redirect(url_for("routes.update_enrollments", id=enrollment.id))
+        elif valid is not None:
+            logger.critical(f"Fail in validation data, data informed: {valid}")
+            return redirect(url_for("routes.enrollment"))
+
+        logger.info(f"Information validated for the id {enrollment.id}, proceeding with update enrollment.")
+
         new_enrollment = Enrollment(
             id=enrollment.id,
-            name=request.form.get("nomeForm"),
-            cpf=request.form.get("cpfForm"),
-            church=request.form.get("churchForm"),
-            celphone=request.form.get("celForm"),
-            emergency_contact=request.form.get("emergencyContactForm"),
-            email=request.form.get("emailForm"),
+            name=name,
+            cpf=cpf,
+            church=church,
+            celphone=celphone,
+            emergency_contact=emergency_contact,
+            email=email,
             remedy=request.form.get("remedyForm"),
             hour_remedy=request.form.get("hourForm"),
             local_proof=enrollment.local_proof,
@@ -109,3 +165,15 @@ def export_to_telegram():
     service._thread_export_excel_to_telegram()
     
     return redirect(url_for("routes.get_enrollments"))
+
+@routes.route("/payment-pix")
+def payment_pix():
+    payment_link = os.getenv("PIX_URL")
+
+    return redirect(payment_link)
+
+@routes.route("/payment-credit-card")
+def payment_credit_card():
+    payment_link = os.getenv("CREDIT_CARD_URL")
+
+    return redirect(payment_link)

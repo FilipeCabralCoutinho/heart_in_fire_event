@@ -17,6 +17,16 @@
 
         <h1>Editar Inscrição</h1>
 
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for msg in messages %}
+                    <li style="color: red;">{{ msg }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
         <form action="{{ url_for('routes.update_enrollments', id=enrollment.id) }}" method="POST" enctype="multipart/form-data">
 
             <label>Nome completo</label>
