@@ -1,16 +1,17 @@
 import logging
+import sys
+from logging.handlers import RotatingFileHandler
+
 from rich import print as rprint
 from rich.markdown import Markdown
-from logging.handlers import RotatingFileHandler
-import sys
 
 
 def setup_logging():
-    #config root logger
+    # config root logger
     stream_handler_root = logging.StreamHandler(sys.stdout)
     stream_handler_root.setFormatter(
         logging.Formatter(fmt="ROOT: [ %(levelname)s ] %(message)s ")
-        )
+    )
     logging.basicConfig(handlers=[stream_handler_root])
 
     # config my logger
@@ -35,5 +36,6 @@ def setup_logging():
     rprint(md)
 
     return logger
+
 
 logger = setup_logging()

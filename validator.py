@@ -1,10 +1,8 @@
 import re
-import os
-from email_validator import validate_email, EmailNotValidError
-from flask import render_template, jsonify, flash, redirect, url_for
 from typing import Optional
-from logger import logger
 
+from email_validator import EmailNotValidError, validate_email
+from flask import flash
 
 ACCEPTED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg"}
 CHURCHS_NAMES = {
@@ -21,8 +19,9 @@ CHURCHS_NAMES = {
     "Igreja de Vila Humaitá",
     "Igreja de Vila Jurandir",
     "Igreja de Vila Tiradentes",
-    "Igreja de Vilar do Teles"
+    "Igreja de Vilar do Teles",
 }
+
 
 class Validator:
     def cpf(self, cpf: str) -> bool:
@@ -42,7 +41,6 @@ class Validator:
 
         return dig1 == int(cpf[9]) and dig2 == int(cpf[10])
 
-
     def phone(self, phone: str) -> bool:
         phone = re.sub(r"\D", "", phone)
 
@@ -50,7 +48,6 @@ class Validator:
             return False
 
         return True
-
 
     def file(self, filename: str) -> bool:
         if filename is None:
@@ -68,7 +65,7 @@ class Validator:
     def name(self, name: str) -> bool:
         pattern = r"^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
         return bool(re.match(pattern, name))
-    
+
     def email_format(self, email: str) -> bool:
         try:
             validate_email(email, check_deliverability=False)
@@ -76,10 +73,21 @@ class Validator:
 
         except EmailNotValidError:
             return False
-        
-    def validate_all(self, name: str, cpf: str, celphone: str, emergency_contact: str, email: str, church: str, filename: Optional[str] = None):
+
+    def validate_all(
+        self,
+        name: str,
+        cpf: str,
+        celphone: str,
+        emergency_contact: str,
+        email: str,
+        church: str,
+        filename: Optional[str] = None,
+    ):
         if not self.name(name):
-            flash("O nome não pode conter números ou símbolos. Apenas letras e espaços são permitidos.")
+            flash(
+                "O nome não pode conter números ou símbolos. Apenas letras e espaços são permitidos."
+            )
             return False
 
         if not self.cpf(cpf):
@@ -89,11 +97,11 @@ class Validator:
         if not self.phone(celphone):
             flash("Celular inválido!")
             return False
-        
+
         if not self.phone(emergency_contact):
             flash("Contato de Emergência inválido!")
             return False
-        
+
         if not self.email_format(email):
             flash("Email inválido. O formato deve ser: nome@dominio.com")
             return False
@@ -101,11 +109,12 @@ class Validator:
         if not self.file(filename):
             flash("Tipo de arquivo não permitido!")
             return False
-        
+
         if not self.church(church):
             flash("A igreja informada é inválida")
             return False
 
         return None
-    
+
+
 validator = Validator()

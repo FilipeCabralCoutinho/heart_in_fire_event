@@ -1,5 +1,7 @@
-from db import db
 from datetime import datetime, timezone
+
+from db import db
+
 
 class Enrollment(db.Model):
     __tablename__ = "Enrollment"
@@ -16,8 +18,7 @@ class Enrollment(db.Model):
     local_proof = db.Column(db.String, nullable=False)
     payment_status = db.Column(db.String, nullable=False)
     created_at = db.Column(
-        db.DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc)
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
     consent_given = db.Column(db.String, nullable=False)
     ip_address = db.Column(db.String(45))
