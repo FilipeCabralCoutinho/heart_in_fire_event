@@ -84,6 +84,22 @@ input:focus,select:focus{
     color:white;
 }
 
+.checkbox-lgpd {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.checkbox-lgpd input {
+    transform: scale(1.5);
+    width: 15%;
+    margin-top: 3%;
+}
+
+.checkbox-lgpd span {
+    width: 85%;
+}
+
 .upload{
     margin-top:20px;
 }
@@ -105,7 +121,7 @@ button:hover{
     background:#8e0000;
 }
 
-/* RESPONSIVIDADE */
+/* RESPONSIVENESS */
 
 @media (max-width:600px){
 

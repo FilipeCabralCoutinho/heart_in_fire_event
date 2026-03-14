@@ -9,7 +9,7 @@ document.querySelector("form").addEventListener("submit", function(event){
     const hour = document.querySelector('[name="hourForm"]').value.trim()
     const fileInput = document.querySelector('[name="proofForm"]')
 
-    // Nome
+    // Name
     if(nome.length < 5){
         alert("Nome deve ter pelo menos 5 caracteres.")
         event.preventDefault()
@@ -23,14 +23,14 @@ document.querySelector("form").addEventListener("submit", function(event){
         return
     }
 
-    // Celular
+    // Celphone
     if(cel.length < 10 || cel.length > 11){
         alert("Celular inválido.")
         event.preventDefault()
         return
     }
 
-    // Emergência
+    // Emergency contact
     if(emergencia.length < 10 || emergencia.length > 11){
         alert("Contato de emergência inválido.")
         event.preventDefault()
@@ -44,14 +44,14 @@ document.querySelector("form").addEventListener("submit", function(event){
         return
     }
 
-    // Medicação
+    // Remedy
     if(remedy === "sim" && hour === ""){
         alert("Informe o horário do remédio.")
         event.preventDefault()
         return
     }
 
-    // Arquivo
+    // File
     if(fileInput.files.length === 0){
         alert("Envie o comprovante de pagamento.")
         event.preventDefault()

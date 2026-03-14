@@ -18,6 +18,16 @@
         <h1>RETIRO DO CORAÇÃO ABRASADO 2026</h1>
         <h3>Dias 19, 20 e 21 de Junho</h3>
 
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for msg in messages %}
+                    <li style="color: red;">{{ msg }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
         <form action="/" method="POST" enctype="multipart/form-data">
 
             <label>Nome completo</label>
@@ -77,14 +87,14 @@
             <div class="payment">
 
                 <p>Pagamento via PIX (R$180,01)</p>
-                <a class="pix" href="https://www.google.com" target="_blank">
+                <a class="pix" href="/payment-pix" target="_blank">
                 Pagar com PIX
                 </a>
 
                 <br><br>
 
                 <p>Pagamento via Cartão (R$192,01)</p>
-                <a class="card" href="https://www.google.com" target="_blank">
+                <a class="card" href="/payment-credit-card" target="_blank">
                 Pagar com Cartão
                 </a>
 
@@ -94,6 +104,13 @@
                 <label>Anexar comprovante</label>
                 <input type="file" name="proofForm" required>
             </div>
+
+            <label class="checkbox-lgpd">
+                <input type="checkbox" name="lgpdForm" required>
+                <span>
+                    Ao clicar em realizar inscrição, você concorda com o tratamento dos seus dados pessoais conforme a LGPD.
+                </span>
+            </label>
 
             <button type="submit">
             Realizar Inscrição
