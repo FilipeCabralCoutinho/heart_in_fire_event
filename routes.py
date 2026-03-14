@@ -33,9 +33,7 @@ def enrollment():
             payment_status="PENDENTE"
         )
 
-        enrollment_dict = service.obj_to_dict(new_enrollment)
-
-        service.create_enrollment(new_enrollment, enrollment_dict)
+        service.create_enrollment(new_enrollment)
 
         return redirect(url_for("routes.enrollment_received"))
 
