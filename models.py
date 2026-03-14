@@ -5,7 +5,7 @@ class Enrollment(db.Model):
     __tablename__ = "Enrollment"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False, unique=True)
+    name = db.Column(db.String, nullable=False)
     cpf = db.Column(db.String, nullable=False, unique=True)
     church = db.Column(db.String, nullable=False)
     celphone = db.Column(db.String, nullable=False)
@@ -19,3 +19,5 @@ class Enrollment(db.Model):
         db.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    consent_given = db.Column(db.String, nullable=False)
+    ip_address = db.Column(db.String(45))
