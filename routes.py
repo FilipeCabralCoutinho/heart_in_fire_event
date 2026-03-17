@@ -29,6 +29,9 @@ def enrollment():
     if request.method == "POST":
         name = request.form.get("nomeForm")
 
+        if not name or not name.strip():
+            return redirect(url_for('routes.enrollment'))
+
         logger.info(
             f"A new registration process has been initiated for Name: {name}"
         )
