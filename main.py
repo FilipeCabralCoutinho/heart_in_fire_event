@@ -10,6 +10,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.register_blueprint(routes)
 app.secret_key = os.getenv("SECRET_KEY")
 
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+
 db.init_app(app)
 
 if __name__ == "__main__":
