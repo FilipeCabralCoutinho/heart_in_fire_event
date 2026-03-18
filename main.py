@@ -4,6 +4,7 @@ from flask import Flask
 
 from db import db
 from routes import routes
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")

@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 
 from db import db
+import pytz
 
+agora_utc = datetime.now(pytz.utc)
 
 class Enrollment(db.Model):
     __tablename__ = "Enrollment"
@@ -18,7 +20,7 @@ class Enrollment(db.Model):
     local_proof = db.Column(db.String, nullable=False)
     payment_status = db.Column(db.String, nullable=False)
     created_at = db.Column(
-        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+        db.DateTime(timezone=True), default=lambda: agora_utc.astimezone(pytz.timezone('US/Eastern'))
     )
     consent_given = db.Column(db.String, nullable=False)
     ip_address = db.Column(db.String(45))
