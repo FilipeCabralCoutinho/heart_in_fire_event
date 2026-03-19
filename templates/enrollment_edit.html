@@ -66,8 +66,14 @@
 
             <label>Toma alguma medicação regularmente?</label>
             <select name="remedyForm" value="{{enrollment.remedy}}">
-                <option value="nao">Não</option>
-                <option value="sim">Sim</option>
+                <option value="nao"
+                    {% if enrollment.remedy == "nao" %}selected{% endif %}>
+                    Não
+                </option>
+                <option value="sim"
+                    {% if enrollment.remedy == "sim" %}selected{% endif %}>
+                    Sim
+                </option>
             </select>
 
             <label>Horário do remédio</label>

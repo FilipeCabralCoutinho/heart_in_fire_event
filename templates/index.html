@@ -87,9 +87,16 @@
             <div class="payment">
 
                 <p>Pagamento via PIX (R$180,01)</p>
-                <a class="pix" href="/payment-pix" target="_blank">
-                Pagar com PIX
-                </a>
+                <button type="button" class="pix" id="btn-show-pix">
+                    Visualizar QR Code PIX
+                </button>
+
+                <div id="qr-code-container" style="display: none; margin-top: 20px; text-align: center;">
+                    <p>Escaneie o código abaixo:</p>
+                    <img src="{{ url_for('static', filename='qr_code.jpeg') }}" alt="QR Code PIX" style="width: 200px; height: 200px;">
+                    <p><strong>Chave PIX (E-mail):</strong> wesleyanaigreja211@gmail.com</p>
+                    <button type="button" id="btn-hide-pix" style="background: #666; font-size: 0.8em;">Fechar QR Code</button>
+                </div>
 
                 <br><br>
 

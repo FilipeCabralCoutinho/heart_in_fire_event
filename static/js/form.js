@@ -68,3 +68,22 @@ document.querySelector("form").addEventListener("submit", function(event){
     }
 
 })
+
+document.addEventListener('DOMContentLoaded', function() {
+    const btnShowPix = document.getElementById('btn-show-pix');
+    const btnHidePix = document.getElementById('btn-hide-pix');
+    const qrContainer = document.getElementById('qr-code-container');
+
+    if (btnShowPix) {
+        btnShowPix.addEventListener('click', function() {
+            qrContainer.style.display = 'block';
+            qrContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    if (btnHidePix) {
+        btnHidePix.addEventListener('click', function() {
+            qrContainer.style.display = 'none';
+        });
+    }
+});
