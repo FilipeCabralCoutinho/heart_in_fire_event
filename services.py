@@ -106,6 +106,7 @@ class Service:
             enrollment.remedy = new_enrollment.remedy
             enrollment.hour_remedy = new_enrollment.hour_remedy
             enrollment.payment_status = new_enrollment.payment_status
+            enrollment.type_enrollment = new_enrollment.type_enrollment
 
             db.session.commit()
 
@@ -146,6 +147,7 @@ class Service:
                     "Data/Hora": str(i.created_at),
                     "Consentimento": i.consent_given,
                     "IP_USER": i.ip_address,
+                    "Tipo Inscrição": i.type_enrollment
                 }
             )
 
@@ -262,6 +264,7 @@ class Service:
             CELULAR: {enrollment.get('celphone')}
             CTT EMERGÊNCIA: {enrollment.get('emergency_contact')}
             EMAIL: {enrollment.get('email')}
+            TIPO INSCRIÇÃO: {enrollment.get("type_enrollment")}
             TOMA REMÉDIO: {enrollment.get('remedy')}
             HORÁRIO REMÉDIO: {enrollment.get('hour_remedy')}
             STATUS PAGAMENTO: {enrollment.get('payment_status')}
@@ -357,6 +360,7 @@ class Service:
             "celphone": enrollment.celphone,
             "emergency_contact": enrollment.emergency_contact,
             "email": enrollment.email,
+            "type_enrollment": enrollment.type_enrollment,
             "remedy": enrollment.remedy,
             "hour_remedy": enrollment.hour_remedy,
             "payment_status": enrollment.payment_status,

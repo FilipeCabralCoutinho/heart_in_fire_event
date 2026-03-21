@@ -15,8 +15,9 @@
 
     <div class="container">
 
-        <h1>RETIRO DO CORAÇÃO ABRASADO 2026</h1>
-        <h3>Dias 19, 20 e 21 de Junho</h3>
+        <div class="header-image-container">
+            <img src="{{ url_for('static', filename='banner.jpeg') }}" alt="Logo Retiro do Coração Abrasado 2026" class="header-image">
+        </div>
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -74,8 +75,14 @@
             <label>Horário do remédio</label>
             <input type="text" name="hourForm">
 
+            <label>Tipo de Inscrição</label>
+            <select name="typeEnrollForm" id="typeEnrollForm">
+                <option value="Participante">Participante</option>
+                <option value="Voluntário">Voluntário</option>
+            </select>
 
-    
+            <hr>
+
             <div class="alert">
                 <strong>Atenção:</strong><br>
                 Realize o pagamento primeiro, depois volte nesta página e anexe o comprovante.
@@ -84,27 +91,32 @@
             </div>
 
 
-            <div class="payment">
+            <div id="payment-participante" class="payment">
+                <p>Pagamento via PIX (<strong>R$180,01</strong>)</p>
+                <button type="button" class="pix" onclick="toggleQR('qr-p')">Visualizar QR Code PIX</button>
 
-                <p>Pagamento via PIX (R$180,01)</p>
-                <button type="button" class="pix" id="btn-show-pix">
-                    Visualizar QR Code PIX
-                </button>
-
-                <div id="qr-code-container" style="display: none; margin-top: 20px; text-align: center;">
+                <div id="qr-p" style="display: none; margin-top: 20px; text-align: center;">
                     <p>Escaneie o código abaixo:</p>
                     <img src="{{ url_for('static', filename='qr_code.jpeg') }}" alt="QR Code PIX" style="width: 200px; height: 200px;">
-                    <p><strong>Chave PIX (E-mail):</strong> wesleyanaigreja211@gmail.com</p>
-                    <button type="button" id="btn-hide-pix" style="background: #666; font-size: 0.8em;">Fechar QR Code</button>
+                    <p><strong>Chave PIX:</strong> wesleyanaigreja211@gmail.com</p>
+                    <button type="button" onclick="toggleQR('qr-p')" style="background: #666; font-size: 0.8em;">Fechar</button>
                 </div>
 
                 <br><br>
-
                 <p>Pagamento via Cartão (R$192,01)</p>
-                <a class="card" href="/payment-credit-card" target="_blank">
-                Pagar com Cartão
-                </a>
+                <a class="card" href="/payment-credit-card" target="_blank">Pagar com Cartão</a>
+            </div>
 
+            <div id="payment-voluntario" class="payment" style="display: none;">
+                <p>Pagamento via PIX (<strong>R$90,01</strong>)</p>
+                <button type="button" class="pix" onclick="toggleQR('qr-v')">Visualizar QR Code PIX</button>
+
+                <div id="qr-v" style="display: none; margin-top: 20px; text-align: center;">
+                    <p>Escaneie o código abaixo:</p>
+                    <img src="{{ url_for('static', filename='qr_code.jpeg') }}" alt="QR Code PIX" style="width: 200px; height: 200px;">
+                    <p><strong>Chave PIX:</strong> wesleyanaigreja211@gmail.com</p>
+                    <button type="button" onclick="toggleQR('qr-v')" style="background: #666; font-size: 0.8em;">Fechar</button>
+                </div>
             </div>
 
             <div class="upload">

@@ -64,6 +64,18 @@
             <label>Email</label>
             <input type="email" name="emailForm" placeholder="exemplo@gmail.com" value="{{enrollment.email}}" required>
 
+            <label>Tipo de Inscrição</label>
+            <select name="typeEnrollForm" value="{{enrollment.type_enrollment}}">
+                <option value="Voluntário"
+                    {% if enrollment.type_enrollment == "Voluntário" %}selected{% endif %}>
+                    Voluntário
+                </option>
+                <option value="Participante"
+                    {% if enrollment.type_enrollment == "Participante" %}selected{% endif %}>
+                    Participante
+                </option>
+            </select>
+
             <label>Toma alguma medicação regularmente?</label>
             <select name="remedyForm" value="{{enrollment.remedy}}">
                 <option value="nao"

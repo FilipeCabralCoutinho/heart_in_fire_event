@@ -87,3 +87,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+document.getElementById('typeEnrollForm').addEventListener('change', function() {
+    const divParticipante = document.getElementById('payment-participante');
+    const divVoluntario = document.getElementById('payment-voluntario');
+
+    if (this.value === 'Participante') {
+        divParticipante.style.display = 'block';
+        divVoluntario.style.display = 'none';
+    } else {
+        divParticipante.style.display = 'none';
+        divVoluntario.style.display = 'block';
+    }
+});
+
+// Função auxiliar para abrir/fechar o QR Code
+function toggleQR(id) {
+    const qr = document.getElementById(id);
+    qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';
+}

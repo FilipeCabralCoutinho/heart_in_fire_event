@@ -94,6 +94,7 @@ def enrollment():
             payment_status="PENDENTE",
             consent_given=consent_given,
             ip_address=request.remote_addr,
+            type_enrollment=request.form.get("typeEnrollForm")
         )
 
         response = service.create_enrollment(new_enrollment)
@@ -170,6 +171,7 @@ def update_enrollments(id):
             hour_remedy=request.form.get("hourForm"),
             local_proof=enrollment.local_proof,
             payment_status=request.form.get("paymentForm"),
+            type_enrollment=request.form.get("typeEnrollForm")
         )
 
         enrollment_dict = service.obj_to_dict(new_enrollment)

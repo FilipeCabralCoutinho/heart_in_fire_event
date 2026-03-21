@@ -24,3 +24,5 @@ class Enrollment(db.Model):
     )
     consent_given = db.Column(db.String, nullable=False)
     ip_address = db.Column(db.String(45))
+    type_enrollment = db.Column(db.String, nullable=True, server_default='Participante')
+    
