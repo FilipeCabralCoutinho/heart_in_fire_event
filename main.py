@@ -1,12 +1,14 @@
 import os
 
 from flask import Flask
+from dotenv import load_dotenv
 
 from db import db
 from routes import routes
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_migrate import Migrate
 
+load_dotenv()
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.register_blueprint(routes)
