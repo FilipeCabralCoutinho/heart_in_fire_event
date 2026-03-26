@@ -38,20 +38,61 @@
             <label>Igreja</label>
             <select name="churchForm" value="{{enrollment.church}}">
 
-                <option>Congregação em Parque Alian</option>
-                <option>Frente Missionária Areia Branca</option>
-                <option>Frente Missionária Jardim José Bonifácio</option>
-                <option>Igreja de Belford Roxo</option>
-                <option>Igreja de Coelho da Rocha</option>
-                <option>Igreja de Éden</option>
-                <option>Igreja de Jardim América</option>
-                <option>Igreja de Pq São José</option>
-                <option>Igreja de Praça da Bandeira</option>
-                <option>Igreja de São João de Meriti</option>
-                <option>Igreja de Vila Humaitá</option>
-                <option>Igreja de Vila Jurandir</option>
-                <option>Igreja de Vila Tiradentes</option>
-                <option>Igreja de Vilar do Teles</option>
+                <option 
+                {% if enrollment.church == "Congregação em Parque Alian" %}selected{% endif %}>
+                Congregação em Parque Alian
+                </option>
+                <option
+                {% if enrollment.church == "Frente Miss Areia Branca" %}selected{% endif %}>
+                Frente Missionária Areia Branca
+                </option>
+                <option
+                {% if enrollment.church == "Frente Miss Jardim José Bonifácio" %}selected{% endif %}>
+                Frente Missionária Jardim José Bonifácio</option>
+                <option
+                {% if enrollment.church == "Igreja de Belford Roxo" %}selected{% endif %}>
+                Igreja de Belford Roxo
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Coelho da Rocha" %}selected{% endif %}>
+                Igreja de Coelho da Rocha
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Éden" %}selected{% endif %}>
+                Igreja de Éden
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Jardim América" %}selected{% endif %}>
+                Igreja de Jardim América
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Pq São José" %}selected{% endif %}>
+                Igreja de Pq São José
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Praça da Bandeira" %}selected{% endif %}>
+                Igreja de Praça da Bandeira
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de São João de Meriti" %}selected{% endif %}>
+                Igreja de São João de Meriti
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Vila Humaitá" %}selected{% endif %}>
+                Igreja de Vila Humaitá
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Vila Jurandir" %}selected{% endif %}>
+                Igreja de Vila Jurandir
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Vila Tiradentes" %}selected{% endif %}>
+                Igreja de Vila Tiradentes
+                </option>
+                <option
+                {% if enrollment.church == "Igreja de Vilar do Teles" %}selected{% endif %}>
+                Igreja de Vilar do Teles
+                </option>
 
             </select>
 
