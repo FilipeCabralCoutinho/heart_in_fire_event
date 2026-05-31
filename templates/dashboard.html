@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Heart in Fire Event</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div>
+                    <h1>Dashboard de Inscrições</h1>
+                    <p class="last-updated">Atualizado em tempo real</p>
+                </div>
+                <div class="header-buttons">
+                    <a href="{{ url_for('routes.get_enrollments') }}" class="back-btn">⬅️ Voltar</a>
+                    <a href="{{ url_for('routes.logout') }}" class="logout-btn">🚪 Sair</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <!-- Resumo Geral -->
+            <section class="section-summary">
+                <h2>Resumo Geral</h2>
+                <div class="cards-grid">
+                    <div class="card card-total">
+                        <div class="card-icon">📊</div>
+                        <div class="card-content">
+                            <p class="card-label">Total de Inscrições</p>
+                            <p class="card-value">{{ data.total }}</p>
+                        </div>
+                    </div>
+                    <div class="card card-confirmed">
+                        <div class="card-icon">✅</div>
+                        <div class="card-content">
+                            <p class="card-label">Confirmadas</p>
+                            <p class="card-value">{{ data.total_confirmed }}</p>
+                        </div>
+                    </div>
+                    <div class="card card-pending">
+                        <div class="card-icon">⏳</div>
+                        <div class="card-content">
+                            <p class="card-label">Pendentes</p>
+                            <p class="card-value">{{ data.total_pending }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Igreja de São João -->
+            <section class="section-churches">
+                <h2>Inscrições por Igreja</h2>
+                <div class="churches-grid">
+                    <div class="church-card">
+                        <h3>⛪ Igreja de São João de Meriti</h3>
+                        <p class="church-count">{{ data.sao_joao }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Frente Miss Areia Branca</h3>
+                        <p class="church-count">{{ data.areia_branca }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Congregação em Parque Alian</h3>
+                        <p class="church-count">{{ data.parque_alian }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Belford Roxo</h3>
+                        <p class="church-count">{{ data.belford_roxo }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Coelho da Rocha</h3>
+                        <p class="church-count">{{ data.coelho_da_rocha }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Éden</h3>
+                        <p class="church-count">{{ data.eden }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Jardim América</h3>
+                        <p class="church-count">{{ data.jardim_america }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Pq São José</h3>
+                        <p class="church-count">{{ data.pq_sao_jose }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Praça da Bandeira</h3>
+                        <p class="church-count">{{ data.praca_da_bandeira }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Vila Humaitá</h3>
+                        <p class="church-count">{{ data.vila_humaita }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Frente Miss Jardim José Bonifácio</h3>
+                        <p class="church-count">{{ data.jose_bonifacio }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Vila Jurandir</h3>
+                        <p class="church-count">{{ data.vila_jurandir }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Vila Tiradentes</h3>
+                        <p class="church-count">{{ data.vila_tiradentes }}</p>
+                    </div>
+                    <div class="church-card">
+                        <h3>⛪ Igreja de Vilar do Teles</h3>
+                        <p class="church-count">{{ data.vilar_do_teles }}</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

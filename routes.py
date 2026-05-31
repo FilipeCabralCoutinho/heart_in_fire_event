@@ -13,6 +13,7 @@ from flask import (
 )
 
 from auth import login_required
+from dashboard import count_numbers
 from db import db
 from logger import logger
 from models import Enrollment
@@ -215,6 +216,13 @@ def login():
             return redirect("/enrollments")
 
     return render_template("login.html")
+
+
+@routes.route("/dashboard")
+@login_required
+def dashboard():
+    data = count_numbers()
+    return render_template("dashboard.html", data=data)
 
 
 @routes.route("/logout")

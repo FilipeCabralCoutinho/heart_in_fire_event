@@ -10,7 +10,10 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body>
-    <a href="{{ url_for('routes.logout') }}" class="logout-btn">🚪 Sair</a>
+    <div class="header-buttons">
+        <a href="{{ url_for('routes.dashboard') }}" class="dashboard-btn">📊 Dashboard</a>
+        <a href="{{ url_for('routes.logout') }}" class="logout-btn">🚪 Sair</a>
+    </div>
     <h1>Lista de Inscrições</h1>
 
     <table border="1">
