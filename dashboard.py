@@ -1,30 +1,32 @@
-from sqlalchemy import text
 from db import db
+from models import Enrollment
 
 def get_dashboard_data():
     # Example: Fetch some data from the database
-    data = db.session.execute(text("SELECT * FROM enrollment")).fetchall()
+    data = db.session.query(Enrollment).all()
     return data
 
 def count_numbers():
-    total = db.session.execute(text("SELECT COUNT(*) FROM enrollment")).fetchone()[0]
-    total_confirmed = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE payment_status='CONFIRMADO'")).fetchone()[0]
-    total_pending = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE payment_status='PENDENTE'")).fetchone()[0]
-    sao_joao = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de São João de Meriti'")).fetchone()[0]
-    areia_branca = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Frente Miss Areia Branca'")).fetchone()[0]
-    parque_alian = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Congregação em Parque Alian'")).fetchone()[0]
-    belford_roxo = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Belford Roxo'")).fetchone()[0]
-    coelho_da_rocha = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Coelho da Rocha'")).fetchone()[0]
-    eden = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Éden'")).fetchone()[0]
-    jardim_america = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Jardim América'")).fetchone()[0]
-    pq_sao_jose = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Pq São José'")).fetchone()[0]
-    praca_da_bandeira = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Praça da Bandeira'")).fetchone()[0]
-    vila_humaita = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Vila Humaitá'")).fetchone()[0]
-    jose_bonifacio = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Frente Miss Jardim José Bonifácio'")).fetchone()[0]
-    vila_jurandir = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Vila Jurandir'")).fetchone()[0]
-    vila_tiradentes = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Vila Tiradentes'")).fetchone()[0]
-    vilar_do_teles = db.session.execute(text("SELECT COUNT(*) FROM enrollment WHERE church='Igreja de Vilar do Teles'")).fetchone()[0]
-    total = {
+    total = db.session.query(Enrollment).count()
+    total_confirmed = db.session.query(Enrollment).filter_by(payment_status='CONFIRMADO').count()
+    total_pending = db.session.query(Enrollment).filter_by(payment_status='PENDENTE').count()
+    
+    sao_joao = db.session.query(Enrollment).filter_by(church='Igreja de São João de Meriti').count()
+    areia_branca = db.session.query(Enrollment).filter_by(church='Frente Miss Areia Branca').count()
+    parque_alian = db.session.query(Enrollment).filter_by(church='Congregação em Parque Alian').count()
+    belford_roxo = db.session.query(Enrollment).filter_by(church='Igreja de Belford Roxo').count()
+    coelho_da_rocha = db.session.query(Enrollment).filter_by(church='Igreja de Coelho da Rocha').count()
+    eden = db.session.query(Enrollment).filter_by(church='Igreja de Éden').count()
+    jardim_america = db.session.query(Enrollment).filter_by(church='Igreja de Jardim América').count()
+    pq_sao_jose = db.session.query(Enrollment).filter_by(church='Igreja de Pq São José').count()
+    praca_da_bandeira = db.session.query(Enrollment).filter_by(church='Igreja de Praça da Bandeira').count()
+    vila_humaita = db.session.query(Enrollment).filter_by(church='Igreja de Vila Humaitá').count()
+    jose_bonifacio = db.session.query(Enrollment).filter_by(church='Frente Miss Jardim José Bonifácio').count()
+    vila_jurandir = db.session.query(Enrollment).filter_by(church='Igreja de Vila Jurandir').count()
+    vila_tiradentes = db.session.query(Enrollment).filter_by(church='Igreja de Vila Tiradentes').count()
+    vilar_do_teles = db.session.query(Enrollment).filter_by(church='Igreja de Vilar do Teles').count()
+    
+    total_dict = {
         "total": total,
         "total_confirmed": total_confirmed,
         "total_pending": total_pending,
@@ -43,4 +45,4 @@ def count_numbers():
         "vila_tiradentes": vila_tiradentes,
         "vilar_do_teles": vilar_do_teles
     }
-    return total
+    return total_dict
