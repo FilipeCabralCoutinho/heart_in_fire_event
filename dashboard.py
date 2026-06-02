@@ -25,6 +25,7 @@ def count_numbers():
     vila_jurandir = db.session.query(Enrollment).filter_by(church='Igreja de Vila Jurandir').count()
     vila_tiradentes = db.session.query(Enrollment).filter_by(church='Igreja de Vila Tiradentes').count()
     vilar_do_teles = db.session.query(Enrollment).filter_by(church='Igreja de Vilar do Teles').count()
+    vila_formoso = db.session.query(Enrollment).filter_by(church='Congregação em Vila Formoso').count()
     
     total_dict = {
         "total": total,
@@ -43,6 +44,7 @@ def count_numbers():
         "jose_bonifacio": jose_bonifacio,
         "vila_jurandir": vila_jurandir,
         "vila_tiradentes": vila_tiradentes,
-        "vilar_do_teles": vilar_do_teles
+        "vilar_do_teles": vilar_do_teles,
+        "vila_formoso": vila_formoso
     }
     return total_dict
