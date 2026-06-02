@@ -6,6 +6,7 @@ from flask import flash
 
 ACCEPTED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg"}
 CHURCHS_NAMES = {
+    "Congregação em Vila Formoso",
     "Congregação em Parque Alian",
     "Frente Miss Areia Branca",
     "Frente Miss Jardim José Bonifácio",
