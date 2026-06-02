@@ -39,6 +39,10 @@
             <select name="churchForm" value="{{enrollment.church}}">
 
                 <option 
+                {% if enrollment.church == "Congregação em Vila Formoso" %}selected{% endif %}>
+                Congregação em Vila Formoso
+                </option>
+                <option 
                 {% if enrollment.church == "Congregação em Parque Alian" %}selected{% endif %}>
                 Congregação em Parque Alian
                 </option>
