@@ -10,7 +10,9 @@ def count_numbers():
     total = db.session.query(Enrollment).count()
     total_confirmed = db.session.query(Enrollment).filter_by(payment_status='CONFIRMADO').count()
     total_pending = db.session.query(Enrollment).filter_by(payment_status='PENDENTE').count()
-    
+    participant = db.session.query(Enrollment).filter_by(type_enrollment='Participante').count()
+    volunteer = db.session.query(Enrollment).filter_by(type_enrollment='Voluntário').count()
+
     sao_joao = db.session.query(Enrollment).filter_by(church='Igreja de São João de Meriti').count()
     areia_branca = db.session.query(Enrollment).filter_by(church='Frente Miss Areia Branca').count()
     parque_alian = db.session.query(Enrollment).filter_by(church='Congregação em Parque Alian').count()
@@ -26,11 +28,13 @@ def count_numbers():
     vila_tiradentes = db.session.query(Enrollment).filter_by(church='Igreja de Vila Tiradentes').count()
     vilar_do_teles = db.session.query(Enrollment).filter_by(church='Igreja de Vilar do Teles').count()
     vila_formoso = db.session.query(Enrollment).filter_by(church='Congregação em Vila Formoso').count()
-    
+
     total_dict = {
         "total": total,
         "total_confirmed": total_confirmed,
         "total_pending": total_pending,
+        "participant": participant,
+        "volunteer": volunteer,
         "sao_joao": sao_joao,
         "areia_branca": areia_branca,
         "parque_alian": parque_alian,

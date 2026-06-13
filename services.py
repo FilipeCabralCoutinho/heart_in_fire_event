@@ -122,6 +122,23 @@ class Service:
 
         return True
 
+    def delete_enrollment(self, enrollment):
+        logger.info(f"delete_enrollment initialized for id: {enrollment.id}")
+
+        try:
+            db.session.delete(enrollment)
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            logger.error(
+                "Error when trying to delete enrollment"
+                f" id: {enrollment.id}. Error: {e}"
+            )
+            raise
+
+        return True
+
     def export_to_excel(self, app):
         logger.info("export_to_excel method initialized!")
 

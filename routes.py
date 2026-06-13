@@ -185,6 +185,23 @@ def update_enrollments(id):
             return redirect(url_for("routes.get_enrollments"))
 
 
+@routes.route("/delete/<int:id>", methods=["POST"])
+@login_required
+def delete_enrollment(id):
+    enrollment = db.session.query(Enrollment).filter_by(id=id).first()
+    
+    if enrollment:
+        logger.info(
+            "A delete enrollment process has been "
+            f"initiated for id: {enrollment.id}"
+        )
+        service.delete_enrollment(enrollment)
+        flash("Inscrição excluída com sucesso!")
+    else:
+        flash("Inscrição não encontrada.")
+        
+    return redirect(url_for("routes.get_enrollments"))
+
 @routes.route("/export-to-excel")
 @login_required
 def export_enrollments():
